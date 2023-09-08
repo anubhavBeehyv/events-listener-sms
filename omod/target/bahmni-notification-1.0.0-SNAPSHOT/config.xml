@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module configVersion="1.2">
+
+    <!-- Base Module Properties -->
+    <id>bahmni-notification</id>
+    <name>Bahmni SMS Listener</name>
+    <version>1.0.0-SNAPSHOT</version>
+    <package>org.bahmni.module.notification</package>
+    <author>Bhamni</author>
+    <description>Bahmni SMS Listener module to listen to internal Spring events and capturing information from them to send sms.</description>
+
+    <activator>org.bahmni.module.notification.BahmniSMSListenerActivator</activator>
+
+    <require_modules>
+        <require_module>org.bahmni.module.events</require_module>
+    </require_modules>
+
+
+</module>
+
