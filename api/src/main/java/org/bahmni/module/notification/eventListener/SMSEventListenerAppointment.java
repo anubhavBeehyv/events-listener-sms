@@ -7,11 +7,13 @@ import org.bahmni.module.events.api.model.Event;
 import org.bahmni.module.notification.service.SMSSenderService;
 import org.openmrs.Patient;
 import org.openmrs.PersonAttribute;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointments.web.contract.AppointmentDefaultResponse;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,6 +29,7 @@ public class SMSEventListenerAppointment {
     }
 
     @EventListener
+    @Async("EventsAsyncNotification")
     public void onApplicationEvent(Event event) {
         try {
             if (event.eventType == BahmniEventType.BAHMNI_PATIENT_CREATED) {
@@ -42,7 +45,8 @@ public class SMSEventListenerAppointment {
     private void handlePatientCreatedEvent(SimpleObject payload) {
         SimpleObject person = payload.get("person");
         if (person != null && person.containsKey("uuid")) {
-            Patient patient = Context.getPatientService().getPatientByUuid(person.get("uuid"));
+            PatientService patientService=Context.getRegisteredComponent("patientService",PatientService.class);
+            Patient patient = patientService.getPatientByUuid(person.get("uuid"));
             String phoneNumber = getPhoneNumber(patient);
             if (phoneNumber != null) {
                 String message = smsService.getRegistrationMessage(patient, null);
